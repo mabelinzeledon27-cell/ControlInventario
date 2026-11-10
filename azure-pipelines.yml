@@ -1,0 +1,45 @@
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- task: UseDotNet@2
+  displayName: 'Instalar .NET 10'
+  inputs:
+    packageType: 'sdk'
+    version: '10.x'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Restaurar dependencias'
+  inputs:
+    command: 'restore'
+    projects: 'ControlInventario/ControlInventario.csproj'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Compilar proyecto'
+  inputs:
+    command: 'build'
+    projects: 'ControlInventario/ControlInventario.csproj'
+    arguments: '--configuration $(buildConfiguration) --no-restore'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publicar aplicación'
+  inputs:
+    command: 'publish'
+    publishWebProjects: false
+    projects: 'ControlInventario/ControlInventario.csproj'
+    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/publish'
+    zipAfterPublish: false
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Guardar artefacto'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/publish'
+    ArtifactName: 'ControlInventario'
+    publishLocation: 'Container'
