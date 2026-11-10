@@ -1,0 +1,43 @@
+﻿@model IEnumerable<ControlInventario.Models.Proveedor>
+
+@{
+    ViewData["Title"] = "Proveedores";
+}
+
+<h1>Lista de proveedores</h1>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-warning">
+        @TempData["Error"]
+    </div>
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Registrar proveedor</a>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var proveedor in Model)
+        {
+            <tr>
+                <td>@proveedor.Id</td>
+                <td>@proveedor.Nombre</td>
+                <td>@proveedor.Telefono</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@proveedor.Id">Editar</a> |
+                    <a asp-action="Delete" asp-route-id="@proveedor.Id">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
