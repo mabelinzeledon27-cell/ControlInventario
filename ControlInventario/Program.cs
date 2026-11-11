@@ -1,12 +1,22 @@
+
 using ControlInventario.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Obtener la conexión de Azure SQL
+var connectionString = builder.Configuration
+    .GetConnectionString("ConexionAzure");
+
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException(
+        "No se encontró la cadena de conexión ConexionAzure.");
+}
+
 // Registrar la conexión con SQL Server
 builder.Services.AddDbContext<InventarioContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("ConexionInventario")));
+    options.UseSqlServer(connectionString));
 
 // Agregar servicios MVC
 builder.Services.AddControllersWithViews();
