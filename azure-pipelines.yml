@@ -33,6 +33,7 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: false
+    modifyOutputPath: false
     projects: 'ControlInventario/ControlInventario.csproj'
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/publish'
     zipAfterPublish: false
