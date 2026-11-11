@@ -37,9 +37,27 @@ steps:
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/publish'
     zipAfterPublish: false
 
+- task: ArchiveFiles@2
+  displayName: 'Comprimir aplicación'
+  inputs:
+    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/publish'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/ControlInventario.zip'
+    replaceExistingArchive: true
+
 - task: PublishBuildArtifacts@1
   displayName: 'Guardar artefacto'
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/publish'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/ControlInventario.zip'
     ArtifactName: 'ControlInventario'
     publishLocation: 'Container'
+
+- task: AzureWebApp@1
+  displayName: 'Desplegar en Azure App Service'
+  inputs:
+    azureSubscription: 'ConexionAzureInventario'
+    appType: 'webApp'
+    appName: 'control-inventario-mabe-2026'
+    package: '$(Build.ArtifactStagingDirectory)/ControlInventario.zip'
+    deploymentMethod: 'auto'
